@@ -4,6 +4,7 @@ import { createServer } from "http";
 import prismaClient from "./prisma";
 import sampleRouter from "./routers/sample.router";
 import registerRouter from "./routers/register.router";
+import rankingRouter from "./routers/ranking.router";
 if (!process.env.PORT) {
    throw new Error("PORT");
 }
@@ -26,7 +27,8 @@ app.get("/status", (req: Request, res: Response) => {
 });
 
 app.use("/", sampleRouter);
-app.use("/register/", registerRouter);
+app.use("/register", registerRouter);
+app.use("/ranking", rankingRouter);
 
 const shutdown = () => {
    console.log("Gracefully shutting down");

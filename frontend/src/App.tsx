@@ -13,7 +13,7 @@ const App = () => {
    const [isGameStarted, setGameStarted] = useState(false);
    const [stopWatch, setStopWatch] = useState<any>();
    const [name, setName] = useState("player");
-   const numberOfTarget = 1;
+   const numberOfTarget = 2;
 
    interface rankingItem {
       username: string;
@@ -56,7 +56,7 @@ const App = () => {
       // start
       if (!isGameStarted) {
          const stopWatch = setInterval(() => {
-            setTime((prev) => prev + 1);
+            setTime((prev) => prev + 0.01);
          }, 10);
          setStopWatch(stopWatch);
          setGameStarted(true);
@@ -67,8 +67,13 @@ const App = () => {
 
    const handleSendRanking = () => {
       localStorage.setItem("name", name);
+      const postData = {
+         username: name,
+         time: Math.round(time * 100) / 100,
+      };
+      console.log("postData", postData);
       axios
-         .post(import.meta.env.VITE_API_URL + "/ranking", {})
+         .post(import.meta.env.VITE_API_URL + "/ranking", postData)
          .then((response) => {
             localStorage.setItem("userId", response.data.body.userId);
             setRanking(response.data.body.ranking);
@@ -89,7 +94,7 @@ const App = () => {
             Score: {score}/{numberOfTarget}
          </Text>
          <Text fontSize="4xl">{name}</Text>
-         <Text fontSize="4xl">{(time / 100).toFixed(2)}</Text>
+         <Text fontSize="4xl">{time.toFixed(2)}</Text>
          {!isGameStarted && stopWatch && (
             <VStack w="80%" h="80%" bg="teal.50" p={25}>
                <HStack>

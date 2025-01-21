@@ -1,4 +1,4 @@
-import { Box, VStack, Text } from "@chakra-ui/react";
+import { Box, VStack, Text, Input, HStack, Button } from "@chakra-ui/react";
 import { useWindowSize } from "@uidotdev/usehooks";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -12,16 +12,18 @@ const App = () => {
    const [time, setTime] = useState<number>(0);
    const [isGameStarted, setGameStarted] = useState(false);
    const [stopWatch, setStopWatch] = useState<any>();
+   const [name, setName] = useState("player");
    const numberOfTarget = 1;
 
    interface rankingItem {
       username: string;
+      userId: number;
       time: number;
    }
    const [ranking, setRanking] = useState<rankingItem[]>([
-      { username: "a", time: 10 },
-      { username: "b", time: 12 },
-      { username: "c", time: 15 },
+      { username: "a", userId: 1, time: 10 },
+      { username: "b", userId: 2, time: 12 },
+      { username: "c", userId: 3, time: 15 },
    ]);
 
    // 初期ボックスの配置を設定
@@ -43,7 +45,7 @@ const App = () => {
          setGameStarted(false);
 
          axios
-            .get("")
+            .get(import.meta.env.VITE_API_URL + "/ranking")
             .then((response) => setRanking(response.data.body.ranking))
             .catch((error) => console.error(error));
       }
@@ -63,6 +65,17 @@ const App = () => {
       setScore((prev) => prev + 1);
    };
 
+   const handleSendRanking = () => {
+      localStorage.setItem("name", name);
+      axios
+         .post(import.meta.env.VITE_API_URL + "/ranking", {})
+         .then((response) => {
+            localStorage.setItem("userId", response.data.body.userId);
+            setRanking(response.data.body.ranking);
+         })
+         .catch((error) => console.error(error));
+   };
+
    return (
       <VStack
          w="100vw"
@@ -75,11 +88,20 @@ const App = () => {
          <Text fontSize="4xl">
             Score: {score}/{numberOfTarget}
          </Text>
+         <Text fontSize="4xl">{name}</Text>
          <Text fontSize="4xl">{(time / 100).toFixed(2)}</Text>
          {!isGameStarted && stopWatch && (
-            <VStack w="80%" h="80%" bg="white" p={25}>
+            <VStack w="80%" h="80%" bg="teal.50" p={25}>
+               <HStack>
+                  <Input
+                     bg="white"
+                     value={name}
+                     onChange={(e) => setName(e.target.value)}
+                  />
+                  <Button onClick={handleSendRanking}>ランキングに登録</Button>
+               </HStack>
                {ranking.map((item: rankingItem) => (
-                  <Text>
+                  <Text key={item.userId}>
                      {item.username}: {item.time}
                   </Text>
                ))}

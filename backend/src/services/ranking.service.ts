@@ -36,15 +36,15 @@ class rankingService {
       try {
          const { username, userId, time } = req.body;
          let user = await prisma.user.findUnique({ where: { username } });
-
          if (!user) {
-            // return sendErrorResponse(res, "INVALID_PARAMETERS", {
-            //    message: "ユーザーがありません",
-            // });
             user = await prisma.user.create({
                data: {
                   username: username,
                },
+            });
+         } else if (userId != null && user.id !== userId) {
+            return sendErrorResponse(res, "INVALID_PARAMETERS", {
+               message: "ユーザーがありません",
             });
          }
 

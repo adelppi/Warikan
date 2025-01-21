@@ -20,11 +20,7 @@ const App = () => {
       userId: number;
       time: number;
    }
-   const [ranking, setRanking] = useState<rankingItem[]>([
-      { username: "a", userId: 1, time: 10 },
-      { username: "b", userId: 2, time: 12 },
-      { username: "c", userId: 3, time: 15 },
-   ]);
+   const [ranking, setRanking] = useState<rankingItem[]>([]);
 
    // 初期ボックスの配置を設定
    useEffect(() => {
@@ -69,6 +65,7 @@ const App = () => {
       localStorage.setItem("name", name);
       const postData = {
          username: name,
+         userId: localStorage.getItem("userId"),
          time: Math.round(time * 100) / 100,
       };
       console.log("postData", postData);
@@ -106,7 +103,7 @@ const App = () => {
                   <Button onClick={handleSendRanking}>ランキングに登録</Button>
                </HStack>
                {ranking.map((item: rankingItem) => (
-                  <Text key={item.userId}>
+                  <Text key={item.username}>
                      {item.username}: {item.time}
                   </Text>
                ))}

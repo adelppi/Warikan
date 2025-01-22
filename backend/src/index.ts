@@ -2,12 +2,12 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { createServer } from "http";
 import prismaClient from "./prisma";
-import sampleRouter from "./routers/sample.router";
-import registerRouter from "./routers/register.router";
 import rankingRouter from "./routers/ranking.router";
+
 if (!process.env.PORT) {
    throw new Error("PORT");
 }
+
 const PORT = Number(process.env.PORT);
 
 const app = express();
@@ -26,8 +26,6 @@ app.get("/status", (req: Request, res: Response) => {
    res.send({ status: "online" });
 });
 
-app.use("/", sampleRouter);
-app.use("/register", registerRouter);
 app.use("/ranking", rankingRouter);
 
 const shutdown = () => {

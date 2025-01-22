@@ -3,7 +3,7 @@ import rankingService from "../services/ranking.service";
 
 const rankingRouter = Router();
 
-rankingRouter.get("/", rankingService.ranking);
-rankingRouter.post("/", rankingService.rankingPost);
+rankingRouter.get("/", rankingService.getRanking);
+rankingRouter.post("/", rankingService.updateRanking);
 
 export default rankingRouter;

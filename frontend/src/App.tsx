@@ -12,7 +12,9 @@ const App = () => {
    const [time, setTime] = useState<number>(0);
    const [isGameStarted, setGameStarted] = useState(false);
    const [stopWatch, setStopWatch] = useState<any>();
-   const [name, setName] = useState("player");
+   const [username, setUsername] = useState(
+      localStorage.getItem("username") || null
+   );
    const numberOfTarget = 2;
 
    interface rankingItem {
@@ -32,6 +34,9 @@ const App = () => {
          setPositions(newPositions);
       }
    }, [width, height]);
+   useEffect(() => {
+      console.log(username);
+   }, [username]);
 
    useEffect(() => {
       // end
@@ -62,9 +67,14 @@ const App = () => {
    };
 
    const handleSendRanking = () => {
-      localStorage.setItem("name", name);
+      if (!username?.trim()) {
+         console.log("名前を入力してください");
+         return;
+      }
+
+      localStorage.setItem("username", username);
       const postData = {
-         username: name,
+         username: username,
          userId: localStorage.getItem("userId"),
          time: Math.round(time * 100) / 100,
       };
@@ -90,16 +100,18 @@ const App = () => {
          <Text fontSize="4xl">
             Score: {score}/{numberOfTarget}
          </Text>
-         <Text fontSize="4xl">{name}</Text>
+         <Text fontSize="4xl">{username}</Text>
          <Text fontSize="4xl">{time.toFixed(2)}</Text>
          {!isGameStarted && stopWatch && (
             <VStack w="80%" h="80%" bg="teal.50" p={25}>
                <HStack>
-                  <Input
-                     bg="white"
-                     value={name}
-                     onChange={(e) => setName(e.target.value)}
-                  />
+                  {!localStorage.getItem("username") && (
+                     <Input
+                        bg="white"
+                        value={username || ""}
+                        onChange={(e) => setUsername(e.target.value)}
+                     />
+                  )}
                   <Button onClick={handleSendRanking}>ランキングに登録</Button>
                </HStack>
                {ranking.map((item: rankingItem) => (

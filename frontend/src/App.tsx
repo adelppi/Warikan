@@ -15,7 +15,7 @@ const App = () => {
    const [username, setUsername] = useState(
       localStorage.getItem("username") || null
    );
-   const numberOfTarget = 2;
+   const numberOfTarget = 12;
 
    interface rankingItem {
       username: string;
